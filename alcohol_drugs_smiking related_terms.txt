@@ -100,3 +100,15 @@ methamphetamine
 Synthetic Marijuana 
 TCP 
 Tenocyclidine
+
+
+
+http://time.com/4326676/dangerous-jobs-america/
+https://www.osha.gov/SLTC/ergonomics/
+http://time.com/4326676/dangerous-jobs-america/
+http://www.bls.gov/news.release/osh2.nr0.htm
+http://www.bls.gov/news.release/osh2.t01.htm
+
+['logging workers', 'Fishers', 'aircraft pilots', 'flight engineers', 'police', 'sheriff patrol officer', 'plumber', 'electrician', 'roofers',  'health care workers', ' icu nurse', 'registered nurse', 'nursing assistant', 'psychiatric aides',
+'firefighters and prevention worker', 'firefighter', 'Laborers' ,'freight', 'stock and material movers', 'janitors',
+'cleaners', 'heavy truck drivers', 'tractor drivers', 'trailer drivers', 'refuse material collector', 'recyclable material collectors', 'telecommunication line installers', 'miners', 'coal miner', 'crude oil engineer', 'petroleum engineer', 'nuclear scientist', 'radiologist'] 

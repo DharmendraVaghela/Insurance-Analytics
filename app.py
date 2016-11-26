@@ -7,6 +7,8 @@ from json import loads, dumps
 from urllib3 import HTTPSConnectionPool, disable_warnings
 from urlparse import parse_qs
 
+from calculate_rate import calculate_rate
+
 import logging
 import flask
 
@@ -44,6 +46,8 @@ class FacebookConnection(HTTPSConnectionPool):
         return self.urlopen(method, url, headers=http_headers, body=request_body)
 
 FACEBOOK_CONNECTION=FacebookConnection()
+
+
 
 # OAuth functions
 
@@ -92,7 +96,7 @@ def home_page():
     Renders home page
     """
 
-    # Check whether the user has authorized the app, if authorized login button will not be displayed
+    # Check whether the user has authorized the app. If authorized, login button will not be displayed
     user_authorized = True if "user_token" in TOKENS else False
 
     return flask.render_template("index.html", authorized=user_authorized)
@@ -132,6 +136,12 @@ def post_action(post):
     Do something with a user post
     """
     print(post)
+
+@app.route("/getrate", methods=["GET"])
+def get_rate():
+    rate = calculate_rate('27606', 26)
+
+    return flask.render_template("show_rate.html", my_rate=rate)
 
 @app.route("/getfeed", methods=["GET"])
 def get_posts():

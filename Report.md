@@ -52,3 +52,4 @@ that is to make sure the insurance rate are impacted within a given range instea
 - user with no FB profiles/ Twitter or relevant data- no impact - can be handled
 - Any third party apps you give access to have the access to all your data irrespective of the audience you set or privacy you set i.e. only me option
 - user with fake cleaner profile -Error that can't be handled  
+- Having the approach where a person with the so called bad posts on facebook would have a  -ve impact (increase in the rates) while the posts where there are +ve impact will have a negative impact (decrease in the rates) . This raises a particular concern where in the user who is a smoker, drinker and occasional drug user who also goes to gym and goes for regular health checkups would netural out the impact and would be given base rate; so to combat this we have decided to give more importance to the negative impact, i.e. the user with "bad posts/tweets" than otherwise.  

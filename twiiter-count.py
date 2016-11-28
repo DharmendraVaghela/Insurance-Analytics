@@ -12,7 +12,7 @@ drinking_list=['alcohol','booze','brew','cup','glass','liquor','refreshment','si
 ,' down','drinking','drinking-up','hangover','piss-up','ply','snifter','rum','whiskey','vodka','wine','red wine', 'white wine']
 
 cig_list=['ash','ashtray','baccy','bong','butt ','chain-smoke','cheroot','cig','cigar','cigarette','sxbutt','holder','lighter','paper','ciggie','drag',
-'fag','filter','tip','hookah','lighter','mentholated','nicotine','snuff','snuffbox','tobacco','vaping']
+'fag','filter','tip','hookah','lighter','mentholated','nicotine','snuff','snuffbox','tobacco','vaping', 'cigarettesmoker', 'cigarette-smoker', 'smoker', 'smoke']
 
 drug_list=['Bath Salts','Cannabis','Cocaine','Devils Breath','Ecstasy','GHB','Hashish','Heroin','Ketamine','Kratom','Krokodil','LSD','Marijuana','MDMA','Mescaline','Opium','PCP ',
 'Phencyclidine','Psilocybin','mushrooms','Rohypnol','Speed','methamphetamine','Synthetic Marijuana','TCP','Tenocyclidine']
@@ -76,3 +76,4 @@ def calc(processed_message):
 if __name__ == '__main__':
 	processed_tweet = get_all_tweets("irohit67")
 	calc(processed_tweet)
+	#dummy users: lovesfemsmokers , smokerbroker, 

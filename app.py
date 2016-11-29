@@ -11,11 +11,13 @@ from calculate_rate import calculate_rate
 
 import logging
 import flask
+from flask import Flask, session, render_template, url_for, request, redirect
 
 app = flask.Flask(__name__)
+app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 
-FACEBOOK_APP_ID="<Your app ID>"
-FACEBOOK_APP_SECRET="<Your app secret>"
+FACEBOOK_APP_ID="273803779683669"
+FACEBOOK_APP_SECRET="5824e17970319800be2ef29206348b01"
 GRAPH_API_VERSION="v2.8"
 REDIRECT_URI="http://localhost:5000/callback"
 FB_POSTS_LIMIT = 1000
@@ -102,7 +104,7 @@ def home_page():
     return flask.render_template("index.html", authorized=user_authorized)
 
 
-@app.route("/authorize")
+@app.route("/authorize", methods=['POST'])
 def authorize_facebook():
     """
     Redirects the user to the Facebook login page to authorize the app:
@@ -111,6 +113,8 @@ def authorize_facebook():
 
     :return: Redirects to the Facebook login page
     """
+    session['dob'] = request.form['date']
+    session['zipcode'] = request.form['zipcode']
     return flask.redirect("https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&scope=user_posts"
                     % (FACEBOOK_APP_ID, REDIRECT_URI))
 
@@ -125,7 +129,8 @@ def handle_callback():
 
     try:
         TOKENS["user_token"] = get_user_token(flask.request.args.get("code"))
-        return flask.redirect("/")
+        print("######## " + TOKENS["user_token"] + " ############")
+        return flask.redirect("/hello")
     except NotAuthorizedException:
         return 'Access was not granted or authorization failed', 403
     except:
@@ -143,6 +148,14 @@ def get_rate():
 
     return flask.render_template("show_rate.html", my_rate=rate)
 
+@app.route("/hello")
+def hello():
+    print("In hello")
+    user_authorized = True if "user_token" in TOKENS else False
+    print(user_authorized)
+    print(TOKENS["user_token"])
+    return flask.render_template("insurance_plans.html", zipcode1=session['zipcode'], dob1=session['dob'])
+
 @app.route("/getfeed", methods=["GET"])
 def get_posts():
     global TOKENS
@@ -153,7 +166,7 @@ def get_posts():
     except KeyError:
         return 'Not authorized', 401
 
-    # Get a place id to include in the post, search for coffee within 10000 metres and grab first returned
+    # Get FB posts upto FB_POSTS_LIMIT
     try:
         response = FACEBOOK_CONNECTION(
             'GET',
@@ -187,8 +200,6 @@ def get_posts():
 
     #Get user posts from response which fetches posts upto specified limit
     posts = loads(response.data.decode("utf-8"))["data"]
-
-    #[post_action(post=post) for post in posts['data']]
 
     #Convert json to string & indent for pretty printing
     posts_prettified = dumps(posts, indent=4, separators=(',', ': '))

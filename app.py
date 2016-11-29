@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-
-
 from json import loads, dumps
 from urllib3 import HTTPSConnectionPool, disable_warnings
 from urlparse import parse_qs
 
 from calculate_rate import calculate_rate
+from preprocessing import process_fb_json
 
 import logging
 import flask
@@ -129,18 +128,11 @@ def handle_callback():
 
     try:
         TOKENS["user_token"] = get_user_token(flask.request.args.get("code"))
-        print("######## " + TOKENS["user_token"] + " ############")
-        return flask.redirect("/hello")
+        return flask.redirect("/showplans")
     except NotAuthorizedException:
         return 'Access was not granted or authorization failed', 403
     except:
         raise
-
-def post_action(post):
-    """
-    Do something with a user post
-    """
-    print(post)
 
 @app.route("/getrate", methods=["GET"])
 def get_rate():
@@ -148,13 +140,10 @@ def get_rate():
 
     return flask.render_template("show_rate.html", my_rate=rate)
 
-@app.route("/hello")
-def hello():
-    print("In hello")
+@app.route("/showplans")
+def show_plans():
     user_authorized = True if "user_token" in TOKENS else False
-    print(user_authorized)
-    print(TOKENS["user_token"])
-    return flask.render_template("insurance_plans.html", zipcode1=session['zipcode'], dob1=session['dob'])
+    return flask.render_template("insurance_plans.html")
 
 @app.route("/getfeed", methods=["GET"])
 def get_posts():
@@ -201,11 +190,14 @@ def get_posts():
     #Get user posts from response which fetches posts upto specified limit
     posts = loads(response.data.decode("utf-8"))["data"]
 
+    message_list, story_list = process_fb_json(posts)
+
     #Convert json to string & indent for pretty printing
     posts_prettified = dumps(posts, indent=4, separators=(',', ': '))
     #print (dumps(posts,sort_keys=True, indent=4, separators=(',', ': ')))
 
-    return flask.render_template("posts.html", posts=posts_prettified)
+    #return flask.render_template("posts.html", posts=posts_prettified, zipcode1 = session['zipcode'])
+    return flask.render_template("messages.html", posts=message_list, zipcode1 = session['zipcode'])
 
 if __name__ == '__main__':
     # Register an app token at start-up (purely as validation that configuration for Facebook is correct)

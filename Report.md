@@ -53,3 +53,16 @@ that is to make sure the insurance rate are impacted within a given range instea
 - Any third party apps you give access to have the access to all your data irrespective of the audience you set or privacy you set i.e. only me option
 - user with fake cleaner profile -Error that can't be handled  
 - Having the approach where a person with the so called bad posts on facebook would have a  -ve impact (increase in the rates) while the posts where there are +ve impact will have a negative impact (decrease in the rates) . This raises a particular concern where in the user who is a smoker, drinker and occasional drug user who also goes to gym and goes for regular health checkups would netural out the impact and would be given base rate; so to combat this we have decided to give more importance to the negative impact, i.e. the user with "bad posts/tweets" than otherwise.  
+
+
+
+## Presentation requirement: 
+
+- question 
+- Data collection
+- First approach : classical Way - spent most of the time exploring this in detail
+- Adding to the classical approach the "Facebook/twitter approach" - the speciality of our app
+- Problems: interation issues, not sure how to integrate everything, all the data. Facebook data.
+- concerns: facebook privacy policy; hidden caveats
+- Breaking our own app - we know how to break it; we know where it fails and where it can be handeled: fake users; no data; 
+- Conclusion ---> why to use it? why not use it. Moreover, the reasons why it is not being currently used in the mmarket.

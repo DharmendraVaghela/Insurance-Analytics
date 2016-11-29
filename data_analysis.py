@@ -2,6 +2,8 @@ import json
 import tempfile
 import pandas
 from stemming.porter2 import stem
+import os
+import os.path
 
 from nltk.corpus import stopwords
 
@@ -56,6 +58,12 @@ default_url = 'https://gateway-a.watsonplatform.net/calls'
 apikey1 = '32faaeff82652a00ba0e804f5c84e221caa9e1af'
 note = ''
 
+path = '' #current dir
+#df = pandas.read_csv(os.path.join(path, "input.csv".format(str(x))))
+
+
+
+
 example = 'dont like alcohol dont take marijuana dont attend parties with loads of alcohol, beer and wine' \
               'dont like alcohol dont take marijuana dont attend parties with loads of alcohol, beer and wine' \
               'dont like alcohol dont take marijuana dont attend parties with loads of alcohol, beer and wine' \
@@ -69,5 +77,10 @@ example = 'dont like alcohol dont take marijuana dont attend parties with loads 
               'dont like alcohol dont take marijuana dont attend parties with loads of alcohol, beer and wine'
 
 
+obj = ALC(default_url,note = '',apikey=apikey1,id = '', corpus= '')
+obj.keywords(text=example)
+obj.author()
+
+obj.authors()
 alc = Alchemy(url=default_url, api_key=apikey1)
 print(json.dumps(alc.keywords(text = example, sentiment= True)))

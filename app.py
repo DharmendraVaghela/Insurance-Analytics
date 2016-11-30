@@ -191,13 +191,14 @@ def get_posts():
     posts = loads(response.data.decode("utf-8"))["data"]
 
     message_list, story_list = process_fb_json(posts)
+    msg_concat = u". ".join(message_list)
 
     #Convert json to string & indent for pretty printing
     posts_prettified = dumps(posts, indent=4, separators=(',', ': '))
     #print (dumps(posts,sort_keys=True, indent=4, separators=(',', ': ')))
 
     #return flask.render_template("posts.html", posts=posts_prettified, zipcode1 = session['zipcode'])
-    return flask.render_template("messages.html", posts=message_list, zipcode1 = session['zipcode'])
+    return flask.render_template("messages.html", posts=msg_concat, zipcode1 = session['zipcode'])
 
 if __name__ == '__main__':
     # Register an app token at start-up (purely as validation that configuration for Facebook is correct)

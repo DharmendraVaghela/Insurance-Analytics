@@ -12,6 +12,7 @@ def clean_post(post):
     cleaned_post= emoji_pattern.sub(r'', post)
     cleaned_post.strip()
     cleaned_post = re.sub(r"http\S+", "", cleaned_post)
+    cleaned_post = re.sub(r"[\n\r]+", "", cleaned_post)
 
     return cleaned_post
 

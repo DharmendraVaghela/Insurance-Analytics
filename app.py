@@ -8,6 +8,7 @@ from signal import signal, SIGPIPE, SIG_DFL
 
 from helper import calculate_rate, calculate_age
 from preprocessing import process_fb_json
+from data_analysis import get_deltas
 
 import logging
 import flask
@@ -91,8 +92,6 @@ def get_user_token(code):
         raise
 
 # App routes
-
-
 @app.route("/")
 def home_page():
     """
@@ -134,6 +133,9 @@ def login_with_facebook():
     print(base_rate)
     session['base_rate'] = base_rate
 
+    if(request.form['twitter'] != '' or 'with_fb' in request.form):
+        session['analyse_data'] = True
+
     if 'with_fb' in request.form:
         print("Logging in with FB")
         return flask.redirect("https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&scope=user_posts"
@@ -141,9 +143,8 @@ def login_with_facebook():
     elif 'without_fb' in request.form:
         print("Logging in without FB")
         user_authorized = True if "user_token" in TOKENS else False
-        return flask.render_template("index1.html", authorized=user_authorized)
-
-
+        return flask.render_template("insurance_plans.html", \
+                rate = session['base_rate'], age = session['age'])
 
 
 @app.route("/callback")
@@ -162,21 +163,42 @@ def handle_callback():
         return 'Access was not granted or authorization failed', 403
     except:
         raise
-
+'''
 @app.route("/getrate", methods=["GET"])
 def get_rate():
     rate = calculate_rate(session['zipcode'], session['age'])
 
     return flask.render_template("show_rate.html", my_rate=rate)
-
+'''
 @app.route("/showplans")
 def show_plans():
     user_authorized = True if "user_token" in TOKENS else False
     return flask.render_template("insurance_plans.html", \
             rate = session['base_rate'], age = session['age'])
 
-@app.route("/getfeed", methods=["GET"])
-def get_posts():
+@app.route("/calculaterate", methods=["GET"])
+def get_rate():
+    total_premium_add = 0
+    smok_primium = 0
+    dri_primium = 0
+    occu_primium = 0
+    health_primium = 0
+    if (session['analyse_data'] == True):
+        posts = get_fb_posts()
+        (smok_primium, dri_primium, occu_primium, health_primium) = \
+            get_deltas(posts)
+
+        total_premium_add = smok_primium*0.6 + dri_primium*0.4 + occu_primium*0.48 + health_primium
+
+    final_rate = session['base_rate'] + total_premium_add
+
+    return flask.render_template("viewPlanDetails.html", \
+            base_rate = session['base_rate'], delta = total_premium_add, )
+
+
+
+
+def get_fb_posts():
     global TOKENS
 
     # Make sure there is a token
@@ -223,12 +245,13 @@ def get_posts():
     message_list, story_list = process_fb_json(posts)
     msg_concat = u". ".join(message_list)
 
+    return msg_concat
     #Convert json to string & indent for pretty printing
-    posts_prettified = dumps(posts, indent=4, separators=(',', ': '))
+    #osts_prettified = dumps(posts, indent=4, separators=(',', ': '))
     #print (dumps(posts,sort_keys=True, indent=4, separators=(',', ': ')))
 
     #return flask.render_template("posts.html", posts=posts_prettified, zipcode1 = session['zipcode'])
-    return flask.render_template("messages.html", posts=msg_concat, zipcode1 = session['zipcode'])
+    #return flask.render_template("messages.html", posts=msg_concat, zipcode1 = session['zipcode'])
 
 if __name__ == '__main__':
     # Register an app token at start-up (purely as validation that configuration for Facebook is correct)

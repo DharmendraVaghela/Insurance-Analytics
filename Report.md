@@ -62,7 +62,8 @@ that is to make sure the insurance rate are impacted within a given range instea
 - Data collection
 - First approach : classical Way - spent most of the time exploring this in detail
 - Adding to the classical approach the "Facebook/twitter approach" - the speciality of our app
-- Finally Methodology used
+- Finally Methodology used - base rate + fb/twitter data
+- FB-twitter data -- counting vs sentiment analysis
 - Matrix, weighted order, formulas etc. 
 - Problems: interation issues, not sure how to integrate everything, all the data. Facebook data.
 - concerns: facebook privacy policy; hidden caveats

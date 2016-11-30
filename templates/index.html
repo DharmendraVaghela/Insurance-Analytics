@@ -1,15 +1,230 @@
 <html>
-    <head>
-        <title>Insurance Rate Setter</title>
-    </head>
-    <body>
-        <h3>Let's calculate your insurance premium!</h3>
-        {% if not authorized %}
-            <p><a href="{{ url_for('authorize_facebook') }}">Login with Facebook</a></p>
-        {% else %}
-            <h4> Already authorized </h4>
-            <p><a href="{{ url_for('get_posts') }}">Get user posts</a></p>
-        {% endif %}
-	    <p><a href="{{ url_for('get_rate') }}">Get base rate</a></p>
-    </body>
+<head>
+<meta charset="utf-8"/>
+		<link rel="shortcut icon" href="../static/images/shield_icon2.ico" type="image/x-icon" />
+		<title>Aegis Health Insurance</title>
+
+		<link rel="stylesheet" href="../static/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+		<link rel="stylesheet" href="../static/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+		<link rel="stylesheet" href="../static/css/main.css">
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+			  <div class="container">
+
+			  <div class="row">
+			  <div class="col-lg-2">
+			  </div>
+			  <div class="col-lg-8">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			      <a class="navbar-brand" href="index.html">Aegis Health Insurance</a>
+			    </div>
+
+			    <!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      <ul class="nav navbar-nav">
+			        <li><a href="#">Overview<span class="sr-only">(current)</span></a></li>
+			        <li><a href="#">Affiliates</a></li>
+			        <li><a href="#">Quotes</a></li>
+			        <li class="dropdown">
+			          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Insurance Plans<span class="caret"></span></a>
+			          <ul class="dropdown-menu">
+			            <li><a href="#">Platinum</a></li>
+			            <li><a href="#">Golden</a></li>
+			            <li><a href="#">Silver</a></li>
+			            <li><a href="#">Bronze</a></li>
+			          <!--
+			            <li><a href="viewPlanDetails.html?planCode=AIHP&planType=Platinum Perfection">Platinum</a></li>
+			            <li><a href="viewPlanDetails.html?planCode=AIHG&planType=Golden Protection">Golden</a></li>
+			            <li><a href="viewPlanDetails.html?planCode=AIHS&planType=Silver Lining">Silver</a></li>
+			            <li><a href="viewPlanDetails.html?planCode=AIHB&planType=Bronze Shield">Bronze</a></li>  -->
+			          </ul>
+			        </li>
+			      </ul>
+			      <ul class="nav navbar-nav navbar-right">
+			        <li class="dropdown">
+			          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About us<span class="caret"></span></a>
+			          <ul class="dropdown-menu">
+			            <li><a href="#">Customer Reviews</a></li>
+			            <li><a href="#">Why Aegis?</a></li>
+			            <li><a href="#">Our History</a></li>
+			            <li><a href="#">Our Team</a></li>
+			            <li><a href="#">Contact us</a></li>
+			            <li role="separator" class="divider"></li>
+			            <li><a href="#">login</a></li>
+			          </ul>
+			        </li>
+			        <li><a href="#"><img src="../static/images/search_icon.png" width="20" height="20"/></a></li>
+			      </ul>
+			    </div><!-- /.navbar-collapse -->
+			    </div>
+			    </div>
+			 </div><!-- /.container-fluid -->
+			</nav>
+
+
+
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-2">
+					</div>
+					<div class="col-lg-8">
+
+						<div id="my-slider" class="carousel slide" data-ride="carousel">
+
+							<div class="carousel-inner" role="listbox">
+								<div class="item active">
+									<img src="../static/images/slideshow/poster1.jpg" alt="HealthInsurance"/>
+								</div>
+
+								<div class="item">
+									<img src="../static/images/slideshow/poster2.jpg" alt="HealthInsurance"/>
+								</div>
+								<div class="item">
+									<img src="../static/images/slideshow/poster4.jpg" alt="HealthInsurance"/>
+								</div>
+
+							</div>
+
+							<a class="left carousel-control" href="#my-slider" role="button" data-slide="prev">
+								<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							</a>
+
+							<a class="right carousel-control" href="#my-slider" role="button" data-slide="next">
+								<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							</a>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		<!-- Special version of Bootstrap that only affects content wrapped in .bootstrap-iso -->
+		<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+
+		<!--Font Awesome (added because you use icons in your prepend/append)-->
+		<link rel="stylesheet" href="https://formden.com/static/cdn/font-awesome/4.4.0/css/font-awesome.min.css" />
+
+		<!-- Inline CSS based on choices in "Settings" tab -->
+		<style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form{font-family: Arial, Helvetica, sans-serif; color: black}.bootstrap-iso form button, .bootstrap-iso form button:hover{color: white !important;} .asteriskField{color: red;}</style>
+
+		<!-- HTML Form (wrapped in a .bootstrap-iso div) -->
+
+		<div class="row">
+			<div class="col-sm-offset-4">
+				<h2>Let's get started</h2>
+			</div>
+		</div>
+
+		<br>
+		<div class="bootstrap-iso">
+		 <div class="container">
+
+		  <div class="row">
+		  <div class="col-lg-2">
+		  </div>
+		   <div class="col-lg-6">
+		    <form class="form-horizontal" method="post" action="{{ url_for('authorize_facebook') }}">
+
+		     <div class="form-group">
+		      <label class="control-label col-sm-4 requiredField label-color" for="date">
+		       Birth Date
+		       <span class="asteriskField">
+		        *
+		       </span>
+		      </label>
+		      <div class="col-sm-4">
+		       <div class="input-group">
+		        <div class="input-group-addon">
+		         <i class="fa fa-calendar">
+		         </i>
+		        </div>
+		        <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
+		       </div>
+		      </div>
+		     </div>
+
+		     <br>
+
+		     <div class="form-group">
+		      <label class="control-label col-sm-4 requiredField label-color" for="zipcode">
+		       Zipcode
+		       <span class="asteriskField">
+		        *
+		       </span>
+		      </label>
+		      <div class="col-sm-4">
+		        <input class="form-control" id="zipcode" name="zipcode" type="text"/>
+		      </div>
+		     </div>
+		     <br>
+			<div class="form-group">
+		      <label class="control-label col-sm-4 label-color" for="twitter">
+		       Twitter Handle
+		      </label>
+		      <div class="col-sm-4">
+		        <input class="form-control" id="twitter" name="twitter" type="text"/>
+		      </div>
+		     </div>
+		     <br>
+		    <div class="form-group">
+		      <div class="col-sm-12 col-sm-offset-4">
+
+		       <button class="btn btn-primary" name="submit" type="submit">
+		        Login with Facebook
+		       </button>
+		       &nbsp;&nbsp;&nbsp;&nbsp;
+		       <button class="btn btn-success" name="submit" type="submit">
+		        Proceed without login
+		       </button>
+
+		      </div>
+		    </div>
+
+		    </form>
+		   </div>
+
+		  </div>
+		 </div>
+		</div>
+		<br>
+		<div class="row">
+			<footer class="col-sm-12">
+				<p class="text-center">&copy; copyright 2016</p>
+			</footer>
+		</div>
+
+<!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+<!-- Include jQuery -->
+<script src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+<script>
+	$(document).ready(function(){
+		var date_input=$('input[name="date"]'); //our date input has the name "date"
+		var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+		date_input.datepicker({
+			format: 'mm/dd/yyyy',
+			container: container,
+			todayHighlight: true,
+			autoclose: true,
+		})
+	})
+</script>
+<script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+</body>
 </html>

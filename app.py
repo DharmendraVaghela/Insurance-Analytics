@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-
-
 from json import loads, dumps
 from urllib3 import HTTPSConnectionPool, disable_warnings
 from urlparse import parse_qs
 
 from calculate_rate import calculate_rate
+from preprocessing import process_fb_json
 
 import logging
 import flask
+from flask import Flask, session, render_template, url_for, request, redirect
 
 app = flask.Flask(__name__)
+app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 
-FACEBOOK_APP_ID="<Your app ID>"
-FACEBOOK_APP_SECRET="<Your app secret>"
+FACEBOOK_APP_ID="273803779683669"
+FACEBOOK_APP_SECRET="5824e17970319800be2ef29206348b01"
 GRAPH_API_VERSION="v2.8"
 REDIRECT_URI="http://localhost:5000/callback"
 FB_POSTS_LIMIT = 1000
@@ -102,7 +103,7 @@ def home_page():
     return flask.render_template("index.html", authorized=user_authorized)
 
 
-@app.route("/authorize")
+@app.route("/authorize", methods=['POST'])
 def authorize_facebook():
     """
     Redirects the user to the Facebook login page to authorize the app:
@@ -111,6 +112,8 @@ def authorize_facebook():
 
     :return: Redirects to the Facebook login page
     """
+    session['dob'] = request.form['date']
+    session['zipcode'] = request.form['zipcode']
     return flask.redirect("https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&scope=user_posts"
                     % (FACEBOOK_APP_ID, REDIRECT_URI))
 
@@ -125,23 +128,22 @@ def handle_callback():
 
     try:
         TOKENS["user_token"] = get_user_token(flask.request.args.get("code"))
-        return flask.redirect("/")
+        return flask.redirect("/showplans")
     except NotAuthorizedException:
         return 'Access was not granted or authorization failed', 403
     except:
         raise
-
-def post_action(post):
-    """
-    Do something with a user post
-    """
-    print(post)
 
 @app.route("/getrate", methods=["GET"])
 def get_rate():
     rate = calculate_rate('27606', 26)
 
     return flask.render_template("show_rate.html", my_rate=rate)
+
+@app.route("/showplans")
+def show_plans():
+    user_authorized = True if "user_token" in TOKENS else False
+    return flask.render_template("insurance_plans.html")
 
 @app.route("/getfeed", methods=["GET"])
 def get_posts():
@@ -153,7 +155,7 @@ def get_posts():
     except KeyError:
         return 'Not authorized', 401
 
-    # Get a place id to include in the post, search for coffee within 10000 metres and grab first returned
+    # Get FB posts upto FB_POSTS_LIMIT
     try:
         response = FACEBOOK_CONNECTION(
             'GET',
@@ -188,13 +190,14 @@ def get_posts():
     #Get user posts from response which fetches posts upto specified limit
     posts = loads(response.data.decode("utf-8"))["data"]
 
-    #[post_action(post=post) for post in posts['data']]
+    message_list, story_list = process_fb_json(posts)
 
     #Convert json to string & indent for pretty printing
     posts_prettified = dumps(posts, indent=4, separators=(',', ': '))
     #print (dumps(posts,sort_keys=True, indent=4, separators=(',', ': ')))
 
-    return flask.render_template("posts.html", posts=posts_prettified)
+    #return flask.render_template("posts.html", posts=posts_prettified, zipcode1 = session['zipcode'])
+    return flask.render_template("messages.html", posts=message_list, zipcode1 = session['zipcode'])
 
 if __name__ == '__main__':
     # Register an app token at start-up (purely as validation that configuration for Facebook is correct)

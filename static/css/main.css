@@ -1,0 +1,23 @@
+.carousel-inner > .item > img{
+       width:750px;
+       height:220px;
+     }
+
+.carousel .carousel-control { visibility: hidden; }
+.carousel:hover .carousel-control { visibility: visible; }
+
+body{
+color:#616a6b;
+}
+
+.label-color{
+color:  #616a6b;
+}
+
+
+.mySlider{
+margin-top:0px;
+}
+
+
+

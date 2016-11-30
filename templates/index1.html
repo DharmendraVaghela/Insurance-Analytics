@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>Insurance Rate Setter</title>
+    </head>
+    <body>
+        <h3>Let's calculate your insurance premium!</h3>
+        {% if not authorized %}
+            <p><a href="{{ url_for('authorize_facebook') }}">Login with Facebook</a></p>
+        {% else %}
+            <h4> Already authorized </h4>
+            <p><a href="{{ url_for('get_posts') }}">Get user posts</a></p>
+        {% endif %}
+	    <p><a href="{{ url_for('get_rate') }}">Get base rate</a></p>
+    </body>
+</html>

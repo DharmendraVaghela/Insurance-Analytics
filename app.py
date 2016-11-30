@@ -4,8 +4,9 @@
 from json import loads, dumps
 from urllib3 import HTTPSConnectionPool, disable_warnings
 from urlparse import parse_qs
+from signal import signal, SIGPIPE, SIG_DFL
 
-from calculate_rate import calculate_rate
+from helper import calculate_rate, calculate_age
 from preprocessing import process_fb_json
 
 import logging
@@ -22,6 +23,7 @@ REDIRECT_URI="http://localhost:5000/callback"
 FB_POSTS_LIMIT = 1000
 
 TOKENS = {}
+signal(SIGPIPE,SIG_DFL)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 disable_warnings()
@@ -102,9 +104,13 @@ def home_page():
 
     return flask.render_template("index.html", authorized=user_authorized)
 
+@app.route("/test", methods=['POST'])
+def test():
+    user_authorized = True if "user_token" in TOKENS else False
+    return flask.render_template("index1.html", authorized=user_authorized)
 
 @app.route("/authorize", methods=['POST'])
-def authorize_facebook():
+def login_with_facebook():
     """
     Redirects the user to the Facebook login page to authorize the app:
     - response_type=code
@@ -112,10 +118,33 @@ def authorize_facebook():
 
     :return: Redirects to the Facebook login page
     """
-    session['dob'] = request.form['date']
+    print("In method : login with facebook")
+    print("Date = " + request.form['date'])
+    if request.form['date'] != '':
+        session['age'] = calculate_age(request.form['date'])
+        print(session['age'])
+    #session['age'] = request.form['date']
     session['zipcode'] = request.form['zipcode']
-    return flask.redirect("https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&scope=user_posts"
-                    % (FACEBOOK_APP_ID, REDIRECT_URI))
+    print("Zipcode")
+    print(session['zipcode'])
+    print("Age")
+    print(session['age'])
+    base_rate = calculate_rate(session['zipcode'], session['age'])
+    print("Base rate = ")
+    print(base_rate)
+    session['base_rate'] = base_rate
+
+    if 'with_fb' in request.form:
+        print("Logging in with FB")
+        return flask.redirect("https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&scope=user_posts"
+                % (FACEBOOK_APP_ID, REDIRECT_URI))
+    elif 'without_fb' in request.form:
+        print("Logging in without FB")
+        user_authorized = True if "user_token" in TOKENS else False
+        return flask.render_template("index1.html", authorized=user_authorized)
+
+
+
 
 @app.route("/callback")
 def handle_callback():
@@ -136,14 +165,15 @@ def handle_callback():
 
 @app.route("/getrate", methods=["GET"])
 def get_rate():
-    rate = calculate_rate('27606', 26)
+    rate = calculate_rate(session['zipcode'], session['age'])
 
     return flask.render_template("show_rate.html", my_rate=rate)
 
 @app.route("/showplans")
 def show_plans():
     user_authorized = True if "user_token" in TOKENS else False
-    return flask.render_template("insurance_plans.html")
+    return flask.render_template("insurance_plans.html", \
+            rate = session['base_rate'], age = session['age'])
 
 @app.route("/getfeed", methods=["GET"])
 def get_posts():
@@ -203,4 +233,4 @@ def get_posts():
 if __name__ == '__main__':
     # Register an app token at start-up (purely as validation that configuration for Facebook is correct)
     TOKENS["app_token"] = get_app_token()
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)

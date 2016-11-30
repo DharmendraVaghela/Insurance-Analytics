@@ -135,7 +135,7 @@
 		  <div class="col-lg-2">
 		  </div>
 		   <div class="col-lg-6">
-		    <form class="form-horizontal" method="post" action="{{ url_for('authorize_facebook') }}">
+		    <form class="form-horizontal" method="post" action="{{ url_for('login_with_facebook') }}">
 
 		     <div class="form-group">
 		      <label class="control-label col-sm-4 requiredField label-color" for="date">
@@ -180,12 +180,15 @@
 		     <br>
 		    <div class="form-group">
 		      <div class="col-sm-12 col-sm-offset-4">
-
-		       <button class="btn btn-primary" name="submit" type="submit">
-		        Login with Facebook
-		       </button>
+						{% if not authorized %}
+			      	<button class="btn btn-primary" name="with_fb" type="submit">
+								Login with Facebook
+			      	</button>
+						{% else %}
+							<h4> App already authorized! </h4>
+						{% endif %}
 		       &nbsp;&nbsp;&nbsp;&nbsp;
-		       <button class="btn btn-success" name="submit" type="submit">
+		       <button class="btn btn-success" name="without_fb" type="submit">
 		        Proceed without login
 		       </button>
 

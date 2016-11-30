@@ -114,7 +114,7 @@ http://www.bls.gov/news.release/osh2.t01.htm
 'cleaners', 'heavy truck drivers', 'tractor drivers', 'trailer drivers', 'refuse material collector', 'recyclable material collectors', 'telecommunication line installers', 'miners', 'coal miner', 'crude oil engineer', 'petroleum engineer', 'nuclear scientist', 'radiologist']
 ===================================================================================================
 the final one used: 
-healthy_list=['training', 'gym', 'weight lifting', 'dumbells', 'protein', 'healthy diet','veggies','vegetable', 'salad','healthy food','workingout', 'running','treadmill', 'aerobics','elliptical','fitnessfreak','zumba', 'pushups', 'situps','yoga','fitness training' ]
+healthy_list=['training', 'gym', 'weight lifting', 'dumbells', 'protein', 'healthy diet','veggies','vegetable', 'salad','healthy food','workingout', 'running','treadmill', 'aerobics','elliptical','fitnessfreak','zumba', 'pushups', 'situps','yoga','fitness training' , 'cycling', 'pilates', 'zumba', 'walking', 'meditation']
 
 drinking_list=['alcohol','booze','brew','cup','glass','liquor','refreshment','sip','draft','gulp'
 ,'libation','liquid','potable', 'potation','potion','shot','slug','spirits','after hours',
@@ -130,4 +130,4 @@ drug_list=['Bath Salts','Cannabis','Cocaine','Devils Breath','Ecstasy','GHB','Ha
 occupation_list=['logging workers', 'Fishers', 'aircraft pilots', 'flight engineers', 'police', 'sheriff patrol officer', 'plumber', 'electrician', 'roofers',  'health care workers',
 'icu nurse', 'registered nurse', 'nursing assistant', 'psychiatric aides', 'firefighters and prevention worker', 'firefighter', 'Laborers' ,'freight', 'stock and material movers',
 'janitors', 'cleaners', 'heavy truck drivers', 'tractor drivers', 'trailer drivers', 'refuse material collector', 'recyclable material collectors',
-'telecommunication line installers', 'miners', 'coal miner', 'crude oil engineer', 'petroleum engineer', 'nuclear scientist', 'radiologist']
+'telecommunication line installers', 'miners', 'coal miner', 'crude oil engineer', 'petroleum engineer', 'nuclear scientist', 'radiologist', 'adventure sports', 'paragliding', 'bungee', 'bungy', 'rafting', 'kayaking', 'surfing', 'snowborading', 'skiing', 'jet skiing', 'sailing', 'parachuting', 'racing', 'motorcross', 'skateboarding', 'mountain biking', 'biking', 'BMX', 'zorbing', 'base jumping', 'sky diving', 'rock climbing', 'mountaineering', 'MMA', 'bobsleigh', 'scuba diving']

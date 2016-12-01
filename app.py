@@ -124,13 +124,7 @@ def login_with_facebook():
         print(session['age'])
     #session['age'] = request.form['date']
     session['zipcode'] = request.form['zipcode']
-    print("Zipcode")
-    print(session['zipcode'])
-    print("Age")
-    print(session['age'])
     base_rate = calculate_rate(session['zipcode'], session['age'])
-    print("Base rate = ")
-    print(base_rate)
     session['base_rate'] = base_rate
 
     if(request.form['twitter'] != '' or 'with_fb' in request.form):
@@ -179,21 +173,26 @@ def show_plans():
 @app.route("/calculaterate", methods=["GET"])
 def get_rate():
     total_premium_add = 0
-    smok_primium = 0
-    dri_primium = 0
-    occu_primium = 0
-    health_primium = 0
+    smok_premium = 0
+    dri_premium = 0
+    occu_premium = 0
+    health_premium = 0
+    drug_premium = 0
     if (session['analyse_data'] == True):
         posts = get_fb_posts()
-        (smok_primium, dri_primium, occu_primium, health_primium) = \
+        (smok_premium, dri_premium, occu_premium, health_premium, drug_premium) = \
             get_deltas(posts)
 
-        total_premium_add = smok_primium*0.6 + dri_primium*0.4 + occu_primium*0.48 + health_primium
+        print("========================================")
+        print session['result_list']
+        print("========================================")
+
+        total_premium_add = smok_premium*0.6 + dri_premium*0.4 + occu_premium*0.48 + health_premium + drug_premium * 0.5
 
     final_rate = session['base_rate'] + total_premium_add
 
     return flask.render_template("viewPlanDetails.html", \
-            base_rate = session['base_rate'], delta = total_premium_add, )
+            base_rate = session['base_rate'], delta = total_premium_add, result = session['result_list'])
 
 
 

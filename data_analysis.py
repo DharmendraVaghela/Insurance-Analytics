@@ -8,6 +8,7 @@ from nltk import PorterStemmer
 from stemming.porter2 import stem
 
 from nltk.corpus import stopwords
+from flask import Flask, session
 
 from watson_developer_cloud import AlchemyLanguageV1 as Alc
 
@@ -108,7 +109,7 @@ path = '' #current dir
 
 
 def stem_dictionaries():
-    healthy_list=['training', 'gym', 'weight lifting', 'dumbells', 'protein', 'healthy diet','veggies','vegetable', 'salad','healthy food','workingout', 'running','treadmill', 'aerobics','elliptical','fitnessfreak','zumba', 'pushups', 'situps','yoga','fitness training', 'physical benefit' ]
+    healthy_list=['training', 'gym', 'weight lifting', 'dumbells', 'protein', 'healthy diet','veggies','vegetable', 'salad','healthy food','workingout', 'running','treadmill', 'aerobics','elliptical','fitnessfreak','zumba', 'pushups', 'situps','yoga','fitness training','physical benefit']
 
     drinking_list=['alcohol','booze','brew','cup','glass','liquor','refreshment','sip','draft','gulp'
     ,'libation','liquid','potable', 'potation','potion','shot','slug','spirits','after hours',
@@ -121,10 +122,10 @@ def stem_dictionaries():
     drug_list=['Bath Salts','Cannabis','Cocaine','Devils Breath','Ecstasy','GHB','Hashish','Heroin','Ketamine','Kratom','Krokodil','LSD','Marijuana','MDMA','Mescaline','Opium','PCP ',
     'Phencyclidine','Psilocybin','mushrooms','Rohypnol','Speed','methamphetamine','Synthetic Marijuana','TCP','Tenocyclidine']
 
-    occupation_list=['logging workers', 'Fishers', 'aircraft pilots', 'flight engineers', 'police', 'sheriff patrol officer', 'plumber', 'electrician', 'roofers',  'health care workers',
+    occupation_list=['fishers', 'fishing', 'aircraft pilots', 'flight engineers', 'police', 'sheriff patrol officer', 'plumber', 'electrician', 'roofers',  'health care workers',
     'icu nurse', 'registered nurse', 'nursing assistant', 'psychiatric aides', 'firefighters and prevention worker', 'firefighter', 'Laborers' ,'freight', 'stock and material movers',
     'janitors', 'cleaners', 'heavy truck drivers', 'tractor drivers', 'trailer drivers', 'refuse material collector', 'recyclable material collectors',
-    'telecommunication line installers', 'miners', 'coal miner', 'crude oil engineer', 'petroleum engineer', 'nuclear scientist', 'radiologist']
+    'telecommunication line installers', 'miner', 'mining', 'crude oil engineer', 'petroleum engineer', 'nuclear', 'radiologist', 'lumberjack']
 
     for each in occupation_list:
         s_occupation_list.append(stem(each).lower())
@@ -143,72 +144,145 @@ def stem_dictionaries():
 
 
 def get_deltas(post):
-    list =[]
+    postive_list = []
+    negative_list = []
 
     api_result = excall(default_url,apikey1,post)
     print api_result
+
+    stem_dictionaries();
 
     parsed_json = json.loads(api_result)
     #print parsed_json['keywords'][1]['sentiment']['type']
 
     i = 0
     for each in parsed_json['keywords']:
-        if float(each['relevance']) > 0.5 and str(each['sentiment']['type'])=='positive':
-            list.append((stem(each['text'].lower()),float(each['relevance']),str(each['sentiment']['type'])))
+        if float(each['relevance']) > 0.2 :
+            if str(each['sentiment']['type'])=='positive':
+                postive_list.append((stem(each['text'].lower()),float(each['relevance'])))
+            elif str(each['sentiment']['type'])=='negative':
+                negative_list.append((stem(each['text'].lower()),float(each['relevance'])))
 
-    print list
+    print postive_list
+    print("======================================================")
+    print negative_list
 
-    min_ol = 0
-    ol = ''
-    min_hl = 0
-    hl = ''
-    min_dl = 0
-    dl = ''
-    min_cl = 0
-    cl = ''
-    min_drl = 0
-    drl = ''
+    max_pos_ol , max_pos_hl, max_pos_dl, max_pos_cl, max_pos_drl = 0, 0, 0, 0, 0
+    max_neg_ol , max_neg_hl, max_neg_dl, max_neg_cl, max_neg_drl = 0, 0, 0, 0, 0
 
-    for each in list:
+    for each in postive_list:
         for ol in s_occupation_list:
-            if str(each[0]) == ol:
-                if each[1] > min_ol:
-                    min_ol = each[1]
-                    ol = each[0]
+            if ol in str(each[0]):
+                if each[1] > max_pos_ol:
+                    max_pos_ol = each[1]
         for hl in s_healthy_list:
-            if str(each[0]) == hl:
-                if each[1] > min_hl:
-                    min_hl = each[1]
-                    hl = each[0]
+            if hl in str(each[0]):
+                if each[1] > max_pos_hl:
+                    max_pos_hl = each[1]
         for dl in s_drinking_list:
-            if str(each[0]) == dl:
-                if each[1] > min_dl:
-                    min_dl = each[1]
-                    dl = each[0]
+            if dl in str(each[0]):
+                if each[1] > max_pos_dl:
+                    max_pos_dl = each[1]
         for cl in s_cig_list:
-            if str(each[0]) == cl:
-                if each[1] > min_cl:
-                    min_cl = each[1]
-                    cl = each[0]
+            if cl in str(each[0]):
+                if each[1] > max_pos_cl:
+                    max_pos_cl = each[1]
         for drl in s_drug_list:
-            if str(each[0]) == drl:
-                if each[1] > min_drl:
-                    min_drl = each[1]
-                    drl = each[0]
+            if drl in str(each[0]):
+                if each[1] > max_pos_drl:
+                    max_pos_drl = each[1]
 
-    print min_dl
-    occu_primium = 5*min_ol
-    dri_primium = 4*min_dl
-    smok_primium = 10*min_cl
-    health_primium = -3*min_hl
+    for each in negative_list:
+        for ol in s_occupation_list:
+            if ol in str(each[0]):
+                if each[1] > max_neg_ol:
+                    max_neg_ol = each[1]
+        for hl in s_healthy_list:
+            if hl in str(each[0]):
+                if each[1] > max_neg_hl:
+                    max_neg_hl = each[1]
+        for dl in s_drinking_list:
+            if dl in str(each[0]):
+                if each[1] > max_neg_dl:
+                    max_neg_dl = each[1]
+        for cl in s_cig_list:
+            if cl in str(each[0]):
+                if each[1] > max_neg_cl:
+                    max_neg_cl = each[1]
+        for drl in s_drug_list:
+            if drl in str(each[0]):
+                if each[1] > max_neg_drl:
+                    max_neg_drl = each[1]
 
-    print 'occupational risk='+ str(min_ol*100)+'%'+' premium='+str(occu_primium)
-    print 'drinking risk='+ str(min_dl*100)+'%'+' premium='+str(dri_primium)
-    print 'smoking risk='+ str(min_cl*100)+'%'+' premium='+str(smok_primium)
-    print 'drug_usage risk='+ str(min_drl*100)+'%'+' premium='+str(occu_primium)
-    print 'health benefit='+ str(min_hl*100)+'%'+' premium='+str(health_primium)
+    alcohol_sentiment="Neutral"
+    drug_sentiment="Neutral"
+    smoke_sentiment="Neutral"
+    lifestyle_sentiment="Neutral"
+    healthy_sentiment="Neutral"
+    alcohol_relevance = 0
+    drug_relevance = 0
+    smoke_relevance = 0
+    lifestyle_relevance = 0
+    healthy_relevance = 0
 
-    return (smok_primium, dri_primium, occu_primium, health_primium)
+    result_list = []
+
+    if max_pos_dl > 0:
+        alcohol_sentiment = "Positive"
+        alcohol_relevance = max_pos_dl
+    elif max_neg_dl > 0:
+        alcohol_sentiment = "Negative"
+        alcohol_relevance = max_neg_dl
+
+    if max_pos_drl > 0:
+        drug_sentiment = "Positive"
+        drug_relevance = max_pos_drl
+    elif max_neg_drl > 0:
+        drug_sentiment = "Negative"
+        drug_relevance = max_neg_drl
+
+    if max_pos_cl > 0:
+        smoke_sentiment = "Positive"
+        smoke_relevance = max_pos_cl
+    elif max_neg_cl > 0:
+        smoke_sentiment = "Negative"
+        smoke_relevance = max_neg_cl
+
+    if max_pos_ol > 0:
+        lifestyle_sentiment = "Positive"
+        lifestyle_relevance = max_pos_ol
+    elif max_neg_ol > 0:
+        lifestyle_sentiment = "Negative"
+        lifestyle_relevance = max_neg_ol
+
+    if max_pos_hl>0:
+        healthy_sentiment = "Positive"
+        healthy_relevance = max_pos_hl
+    elif max_neg_hl>0:
+        healthy_sentiment = "Negative"
+        healthy_relevance = max_neg_hl
+
+    lifestyle_premium = 5*max_pos_ol
+    dri_premium = 4*max_pos_dl
+    smok_premium = 10*max_pos_cl
+    healthy_premium = -3*max_pos_hl
+    drug_premium = 5*max_pos_drl
+
+    result_list.append({'attribute' : 'Alcohol', 'sentiment' : alcohol_sentiment, 'relevance' : alcohol_relevance, 'delta' : dri_premium})
+    result_list.append({'attribute' : 'Drugs', 'sentiment' : drug_sentiment, 'relevance' : drug_relevance, 'delta' : drug_premium})
+    result_list.append({'attribute' : 'Smoking', 'sentiment' : smoke_sentiment, 'relevance' : smoke_relevance, 'delta' : smok_premium})
+    result_list.append({'attribute' : 'Lifestyle', 'sentiment' : lifestyle_sentiment, 'relevance' : lifestyle_relevance, 'delta' : lifestyle_premium})
+    result_list.append({'attribute' : 'Healthy', 'sentiment' : healthy_sentiment, 'relevance' : healthy_relevance, 'delta' : healthy_premium})
+
+    session['result_list'] = result_list
+
+    print 'occupational risk='+ str(max_pos_ol*100)+'%'+' premium='+str(lifestyle_premium)
+    print 'drinking risk='+ str(max_pos_dl*100)+'%'+' premium='+str(dri_premium)
+    print 'smoking risk='+ str(max_pos_cl*100)+'%'+' premium='+str(smok_premium)
+    print 'drug_usage risk='+ str(max_pos_drl*100)+'%'+' premium='+str(drug_premium)
+    print 'health benefit='+ str(max_pos_hl*100)+'%'+' premium='+str(healthy_premium)
+
+    return (smok_premium, dri_premium, lifestyle_premium, healthy_premium, drug_premium)
 
 
 

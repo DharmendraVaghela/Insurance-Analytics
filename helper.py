@@ -23,6 +23,12 @@ def connect_to_db():
 
 def calculate_base_rate(zipcode, age):
     #Conect to database
+    if age < 20:
+        age =20
+
+    if age > 65:
+        age = 65
+
     conn = connect_to_db()
 
     cur = conn.cursor()
@@ -32,8 +38,10 @@ def calculate_base_rate(zipcode, age):
     and m2.ratingarea = m1.ratingarea LIMIT 1", {'_age' : age, '_zip':zipcode})
 
     row = cur.fetchone()
-
-    base_rate = row[0]
+    if(row is not None):
+        base_rate = row[0]
+    else:
+        base_rate = 200.00
 
     print("In base rate calculation, Base rate = " , base_rate)
 

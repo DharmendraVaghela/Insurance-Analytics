@@ -117,54 +117,18 @@
 								<th>Factor</th>
 								<th>Relevance</th>
 								<th>Sentiment</th>
-								<th>Normalized Score</th>
-								<th>+/- Rate</th>
+								<th>+/- Delta Value</th>
 							</tr>
 
+							{% for val in result %}
 							<tr>
 								<td>1</td>
-								<td>Tobacco</td>
-								<td>Relevance</td>
-								<td>Sentiment</td>
-								<td>Norm Score</td>
-								<td>Delta Val</td>
+								<td>{{val.attribute}}</td>
+								<td>{{val.relevance}}</td>
+								<td>{{val.sentiment}}</td>
+								<td>{{val.delta}}</td>
 							</tr>
-
-							<tr>
-								<td>2</td>
-								<td>Drugs</td>
-								<td>Relevance</td>
-								<td>Sentiment</td>
-								<td>Norm Score</td>
-								<td>Delta Val</td>
-							</tr>
-
-							<tr>
-								<td>3</td>
-								<td>Alcohol</td>
-								<td>Relevance</td>
-								<td>Sentiment</td>
-								<td>Norm Score</td>
-								<td>Delta Val</td>
-							</tr>
-
-							<tr>
-								<td>4</td>
-								<td>Lifestyle</td>
-								<td>Relevance</td>
-								<td>Sentiment</td>
-								<td>Norm Score</td>
-								<td>Delta Val</td>
-							</tr>
-
-							<tr>
-								<td>5</td>
-								<td>Healthy</td>
-								<td>Relevance</td>
-								<td>Sentiment</td>
-								<td>Norm Score</td>
-								<td>Delta Val</td>
-							</tr>
+							{% endfor %}
 
 						</table>
 					</div>

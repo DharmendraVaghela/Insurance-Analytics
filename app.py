@@ -9,6 +9,7 @@ from signal import signal, SIGPIPE, SIG_DFL
 from helper import calculate_rate, calculate_age
 from preprocessing import process_fb_json
 from data_analysis import get_deltas
+from get_tweets import get_all_tweets
 
 import logging
 import flask
@@ -103,13 +104,8 @@ def home_page():
 
     return flask.render_template("index.html", authorized=user_authorized)
 
-@app.route("/test", methods=['POST'])
-def test():
-    user_authorized = True if "user_token" in TOKENS else False
-    return flask.render_template("index1.html", authorized=user_authorized)
-
-@app.route("/authorize", methods=['POST'])
-def login_with_facebook():
+@app.route("/viewplans", methods=['POST'])
+def view_plans():
     """
     Redirects the user to the Facebook login page to authorize the app:
     - response_type=code
@@ -117,19 +113,23 @@ def login_with_facebook():
 
     :return: Redirects to the Facebook login page
     """
-    print("In method : login with facebook")
-    print("Date = " + request.form['date'])
+
     if request.form['date'] != '':
         session['age'] = calculate_age(request.form['date'])
-        print(session['age'])
-    #session['age'] = request.form['date']
+
     session['zipcode'] = request.form['zipcode']
     base_rate = calculate_rate(session['zipcode'], session['age'])
     session['base_rate'] = base_rate
 
-    if(request.form['twitter'] != '' or 'with_fb' in request.form):
-        session['analyse_data'] = True
-
+    if request.form['twitter'] != '' :
+        session['analyse_twitter'] = True
+        session['twitter_handle'] = request.form['twitter']
+    else:
+        session['analyse_twitter'] = False
+    if 'with_fb' in request.form:
+        session['analyse_fb'] = True
+    else:
+        session['analyse_fb'] = False
     if 'with_fb' in request.form:
         print("Logging in with FB")
         return flask.redirect("https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&scope=user_posts"
@@ -157,13 +157,7 @@ def handle_callback():
         return 'Access was not granted or authorization failed', 403
     except:
         raise
-'''
-@app.route("/getrate", methods=["GET"])
-def get_rate():
-    rate = calculate_rate(session['zipcode'], session['age'])
 
-    return flask.render_template("show_rate.html", my_rate=rate)
-'''
 @app.route("/showplans")
 def show_plans():
     user_authorized = True if "user_token" in TOKENS else False
@@ -173,28 +167,27 @@ def show_plans():
 @app.route("/calculaterate", methods=["GET"])
 def get_rate():
     total_premium_add = 0
-    smok_premium = 0
-    dri_premium = 0
-    occu_premium = 0
-    health_premium = 0
-    drug_premium = 0
-    if (session['analyse_data'] == True):
-        posts = get_fb_posts()
-        (smok_premium, dri_premium, occu_premium, health_premium, drug_premium) = \
-            get_deltas(posts)
+    posts = ''
 
-        print("========================================")
-        print session['result_list']
-        print("========================================")
 
-        total_premium_add = smok_premium*0.6 + dri_premium*0.4 + occu_premium*0.48 + health_premium + drug_premium * 0.5
+    if (session['analyse_fb'] == True):
+        fb_text = get_fb_posts()
+        print fb_text
+
+
+    if (session['analyse_twitter'] == True):
+        twitter_posts = get_all_tweets(session['twitter_handle'])
+        twitter_text = u". ".join(twitter_posts)
+        posts = twitter_text
+
+
+    if(session['analyse_twitter'] == True or session['analyse_fb'] == True):
+        total_premium_add = get_deltas(posts)
 
     final_rate = session['base_rate'] + total_premium_add
 
     return flask.render_template("viewPlanDetails.html", \
             base_rate = session['base_rate'], delta = total_premium_add, result = session['result_list'])
-
-
 
 
 def get_fb_posts():

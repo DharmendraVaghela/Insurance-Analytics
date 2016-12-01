@@ -41,8 +41,8 @@ def calculate_base_rate(zipcode, age):
     if(row is not None):
         base_rate = row[0]
     else:
-        base_rate = 200.00
-
-    print("In base rate calculation, Base rate = " , base_rate)
-
+        if age < 40:
+            base_rate = 197.62
+        else:
+            base_rate = 221.37
     return base_rate

@@ -16,8 +16,6 @@ def clean_post(post):
 
     return cleaned_post
 
-
-
 #Convert JSON response for FB user posts into lists
 def process_fb_json(posts_json):
     message_list=[]

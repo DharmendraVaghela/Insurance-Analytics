@@ -163,6 +163,7 @@ def get_deltas(post):
             elif str(each['sentiment']['type'])=='negative':
                 negative_list.append((stem(each['text'].lower()),float(each['relevance'])))
 
+    print("======================================================")
     print postive_list
     print("======================================================")
     print negative_list
@@ -262,17 +263,19 @@ def get_deltas(post):
         healthy_sentiment = "Negative"
         healthy_relevance = max_neg_hl
 
-    lifestyle_premium = 5*max_pos_ol
+    lifestyle_premium = 3*max_pos_ol
     dri_premium = 4*max_pos_dl
     smok_premium = 10*max_pos_cl
     healthy_premium = -3*max_pos_hl
-    drug_premium = 5*max_pos_drl
+    drug_premium = 8*max_pos_drl
 
-    result_list.append({'attribute' : 'Alcohol', 'sentiment' : alcohol_sentiment, 'relevance' : alcohol_relevance, 'delta' : dri_premium})
-    result_list.append({'attribute' : 'Drugs', 'sentiment' : drug_sentiment, 'relevance' : drug_relevance, 'delta' : drug_premium})
-    result_list.append({'attribute' : 'Smoking', 'sentiment' : smoke_sentiment, 'relevance' : smoke_relevance, 'delta' : smok_premium})
-    result_list.append({'attribute' : 'Lifestyle', 'sentiment' : lifestyle_sentiment, 'relevance' : lifestyle_relevance, 'delta' : lifestyle_premium})
-    result_list.append({'attribute' : 'Healthy', 'sentiment' : healthy_sentiment, 'relevance' : healthy_relevance, 'delta' : healthy_premium})
+    total_premium_add = smok_premium*0.7 + dri_premium*0.5 + lifestyle_premium*0.34 + drug_premium*0.62 + healthy_premium
+
+    result_list.append({'attribute' : 'Alcohol', 'sentiment' : alcohol_sentiment, 'relevance' : alcohol_relevance, 'delta' : dri_premium, 'factor' : 0.5})
+    result_list.append({'attribute' : 'Drugs', 'sentiment' : drug_sentiment, 'relevance' : drug_relevance, 'delta' : drug_premium, 'factor' : 0.62} )
+    result_list.append({'attribute' : 'Smoking', 'sentiment' : smoke_sentiment, 'relevance' : smoke_relevance, 'delta' : smok_premium, 'factor' : 0.7} )
+    result_list.append({'attribute' : 'Lifestyle', 'sentiment' : lifestyle_sentiment, 'relevance' : lifestyle_relevance, 'delta' : lifestyle_premium, 'factor' : 0.34})
+    result_list.append({'attribute' : 'Healthy', 'sentiment' : healthy_sentiment, 'relevance' : healthy_relevance, 'delta' : healthy_premium, 'factor' : 1.0})
 
     session['result_list'] = result_list
 
@@ -282,10 +285,7 @@ def get_deltas(post):
     print 'drug_usage risk='+ str(max_pos_drl*100)+'%'+' premium='+str(drug_premium)
     print 'health benefit='+ str(max_pos_hl*100)+'%'+' premium='+str(healthy_premium)
 
-    return (smok_premium, dri_premium, lifestyle_premium, healthy_premium, drug_premium)
-
-
-
+    return total_premium_add
     #print 'total premium add/deduct = '+str(total_premium_add)
 
 #for deduction logic 210

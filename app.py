@@ -172,16 +172,15 @@ def get_rate():
 
     if (session['analyse_fb'] == True):
         fb_text = get_fb_posts()
-        print fb_text
-
+        posts = fb_text
 
     if (session['analyse_twitter'] == True):
         twitter_posts = get_all_tweets(session['twitter_handle'])
         twitter_text = u". ".join(twitter_posts)
-        posts = twitter_text
-
+        posts = posts + '. ' + twitter_text
 
     if(session['analyse_twitter'] == True or session['analyse_fb'] == True):
+        print(posts)
         total_premium_add = get_deltas(posts)
 
     final_rate = session['base_rate'] + total_premium_add

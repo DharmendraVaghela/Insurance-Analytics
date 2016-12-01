@@ -109,23 +109,15 @@ path = '' #current dir
 
 
 def stem_dictionaries():
-    healthy_list=['training', 'gym', 'weight lifting', 'dumbells', 'protein', 'healthy diet','veggies','vegetable', 'salad','healthy food','workingout', 'running','treadmill', 'aerobics','elliptical','fitnessfreak','zumba', 'pushups', 'situps','yoga','fitness training','physical benefit']
+    healthy_list=['training', 'gym', 'weight lifting', 'dumbells', 'protein', 'healthy diet','veggies','vegetable', 'salad','healthy food','workingout', 'running','treadmill', 'aerobics','elliptical','fitnessfreak','zumba', 'pushups', 'situps','yoga','fitness training','physical']
 
-    drinking_list=['alcohol','booze','brew','cup','glass','liquor','refreshment','sip','draft','gulp'
-    ,'libation','liquid','potable', 'potation','potion','shot','slug','spirits','after hours',
-    'bender','binge','drinking','booze','booze-up ','boozy','bottle','bottoms up','carouse'
-    ,' down','drinking','drinking-up','hangover','piss-up','ply','snifter','rum','whiskey','vodka','wine','red wine', 'white wine']
+    drinking_list=['alcohol','wine','beer','booze','brew','cup','glass','liquor','refreshment','sip','draft','gulp','libation','liquid','potable','potation','potion','shot','slug','spirits','after hours','bender','binge','drinking','booze','booze-up','boozy','bottle','bottoms up','carouse','down','drinking','drinking-up','hangover','piss-up','ply','snifter','rum','whiskey','vodka','wine','red wine', 'white wine','puke','throw-up']
 
-    cig_list=['ash','ashtray','baccy','bong','butt ','chain-smoke','cheroot','cig','cigar','cigarette','sxbutt','holder','lighter','paper','ciggie','drag',
-    'fag','filter','tip','hookah','lighter','mentholated','nicotine','snuff','snuffbox','tobacco','vaping', 'pipe tobacco', 'pipetobacco','ecigarettes','e-cigarettes','chewing tobacco','chewingtobacco','chain-smoker','chainsmoker','chain smoker']
+    cig_list=['smoke','smoking','sutta','ash','ashtray','baccy','bong','butt ','chain-smoke','cheroot','cig','cigar','cigarette','sxbutt','holder','lighter','paper','ciggie','drag','fag','filter','tip','hookah','lighter','mentholated','nicotine','snuff','snuffbox','tobacco','vaping', 'pipe tobacco', 'pipetobacco','ecigarettes','e-cigarettes','chewing tobacco','chewingtobacco','chain-smoker','chainsmoker','chain smoker']
 
-    drug_list=['Bath Salts','Cannabis','Cocaine','Devils Breath','Ecstasy','GHB','Hashish','Heroin','Ketamine','Kratom','Krokodil','LSD','Marijuana','MDMA','Mescaline','Opium','PCP ',
-    'Phencyclidine','Psilocybin','mushrooms','Rohypnol','Speed','methamphetamine','Synthetic Marijuana','TCP','Tenocyclidine']
+    drug_list=['Bath Salts','Cannabis','Cocaine','Devils Breath', 'Ecstasy','GHB','Hashish','Heroin','Ketamine','Kratom','Krokodil','LSD','Marijuana','MDMA','Mescaline','Opium','PCP ', 'Phencyclidine','Psilocybin','mushrooms','Rohypnol','Speed','methamphetamine','Synthetic Marijuana','TCP','Tenocyclidine','nicotine']
 
-    occupation_list=['fishers', 'fishing', 'aircraft pilots', 'flight engineers', 'police', 'sheriff patrol officer', 'plumber', 'electrician', 'roofers',  'health care workers',
-    'icu nurse', 'registered nurse', 'nursing assistant', 'psychiatric aides', 'firefighters and prevention worker', 'firefighter', 'Laborers' ,'freight', 'stock and material movers',
-    'janitors', 'cleaners', 'heavy truck drivers', 'tractor drivers', 'trailer drivers', 'refuse material collector', 'recyclable material collectors',
-    'telecommunication line installers', 'miner', 'mining', 'crude oil engineer', 'petroleum engineer', 'nuclear', 'radiologist', 'lumberjack']
+    occupation_list=['fisher', 'fishing', 'pilots', 'police', 'soldier', 'plumber', 'electrician', 'roofers','firefighters','firefighter', 'laborers','freight','stock','janitors', 'cleaners','drivers', 'trailer drivers','miner', 'mining', 'crude oil engineer', 'petroleum engineer','radiologist', 'lumberjack','scuba','bungee','bungy','diving','dive','scuba diving','bobsleigh','skateboarding','rafting','surfing','paragliding','climbing','motorcross','BMX','snowborading','parachuting','sailing','kayaking','base jumping','mountaineering','adventure sports','sky diving','mountain biking', 'biking','skiing', 'jet skiing',]
 
     for each in occupation_list:
         s_occupation_list.append(stem(each).lower())
@@ -158,7 +150,7 @@ def get_deltas(post):
     i = 0
     for each in parsed_json['keywords']:
         if float(each['relevance']) > 0.2 :
-            if str(each['sentiment']['type'])=='positive':
+            if (str(each['sentiment']['type'])=='positive' or str(each['sentiment']['type'])=='neutral'):
                 postive_list.append((stem(each['text'].lower()),float(each['relevance'])))
             elif str(each['sentiment']['type'])=='negative':
                 negative_list.append((stem(each['text'].lower()),float(each['relevance'])))
@@ -225,6 +217,8 @@ def get_deltas(post):
     smoke_relevance = 0
     lifestyle_relevance = 0
     healthy_relevance = 0
+
+    print ("+++++++++++++++++++++++Smoke relevance = " + str(max_pos_cl))
 
     result_list = []
 

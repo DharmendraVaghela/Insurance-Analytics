@@ -1,5 +1,11 @@
 # Report Draft
 These all points must be included in ppt/reports
+## NEW CHANGES: 
+- Financial data
+- Heatlh data 
+- FLOW CHART's 
+- CLEANED REPO LINK 
+- Possible approach have everything plus put the things  in future scope 
 
 ## Initial Approach:
 

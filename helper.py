@@ -46,3 +46,18 @@ def calculate_base_rate(zipcode, age):
         else:
             base_rate = 221.37
     return base_rate
+
+def get_plan_name(plan_code):
+    return {
+        'AHIP': ['Platinum Perfection', 15],
+        'AHIG': ['Golden Protection', 10] ,
+        'AHIS': ['Silver Lining', 5],
+        'AHIB': ['Bronze Shield', 0]
+    }[plan_code]
+
+def get_income_addition(income_class):
+    return {
+        'class1': 0,
+        'class2': 5 ,
+        'class3': 15
+    }[income_class]

@@ -6,7 +6,7 @@ from urllib3 import HTTPSConnectionPool, disable_warnings
 from urlparse import parse_qs
 from signal import signal, SIGPIPE, SIG_DFL
 
-from helper import calculate_rate, calculate_age
+from helper import calculate_rate, calculate_age, get_plan_name, get_income_addition
 from preprocessing import process_fb_json
 from data_analysis import get_deltas
 from get_tweets import get_all_tweets
@@ -117,6 +117,8 @@ def view_plans():
     if request.form['date'] != '':
         session['age'] = calculate_age(request.form['date'])
 
+    session['income'] = request.form['income']
+    print(session['income'])
     session['zipcode'] = request.form['zipcode']
     base_rate = calculate_rate(session['zipcode'], session['age'])
     session['base_rate'] = base_rate
@@ -166,9 +168,17 @@ def show_plans():
 
 @app.route("/calculaterate", methods=["GET"])
 def get_rate():
-    total_premium_add = 0
+    #Default premium add is
+    total_premium_add = 15
     posts = ''
 
+    plan_code = request.args.get('plancode')
+    plan_details = get_plan_name(plan_code)
+    plan_name = plan_details[0]
+
+    income_addition_rate = get_income_addition(session['income'])
+
+    _base_rate = session['base_rate'] + plan_details[1] + income_addition_rate
 
     if (session['analyse_fb'] == True):
         fb_text = get_fb_posts()
@@ -180,13 +190,26 @@ def get_rate():
         posts = posts + '. ' + twitter_text
 
     if(session['analyse_twitter'] == True or session['analyse_fb'] == True):
-        print(posts)
         total_premium_add = get_deltas(posts)
+    else:
+        result_list = []
+        result_list.append({'attribute' : 'Alcohol', 'sentiment' : 'Neutral', 'relevance' : 0, 'delta' : 0, 'factor' : 0.5})
+        result_list.append({'attribute' : 'Drugs', 'sentiment' : 'Neutral', 'relevance' : 0, 'delta' : 0, 'factor' : 0.62} )
+        result_list.append({'attribute' : 'Smoking', 'sentiment' : 'Neutral', 'relevance' : 0, 'delta' : 0, 'factor' : 0.7} )
+        result_list.append({'attribute' : 'Lifestyle', 'sentiment' : 'Neutral', 'relevance' : 0, 'delta' : 0, 'factor' : 0.34})
+        result_list.append({'attribute' : 'Healthy', 'sentiment' : 'Neutral', 'relevance' : 0, 'delta' : 0, 'factor' : 1.0})
+        session['result_list'] = result_list
 
-    final_rate = session['base_rate'] + total_premium_add
+    #Base rate should not be lowered
+    if(total_premium_add < 0):
+        total_premium_add = 0
+
+    #final_rate = session['base_rate'] + total_premium_add + income_addition_rate
 
     return flask.render_template("viewPlanDetails.html", \
-            base_rate = session['base_rate'], delta = total_premium_add, result = session['result_list'])
+            base_rate = _base_rate, delta = total_premium_add, \
+            result = session['result_list'], \
+            code = plan_code, name = plan_name)
 
 
 def get_fb_posts():

@@ -1,0 +1,13 @@
+healthy_list=['training', 'gym', 'weight lifting', 'dumbells', 'protein', 'healthy diet','veggies','vegetable', 'salad','healthy food','workingout', 'running','treadmill', 'aerobics','elliptical','fitnessfreak','zumba', 'pushups', 'situps','yoga','fitness training','physical']
+	
+drinking_list=['alcohol','booze','brew','cup','glass','liquor','refreshment','sip','draft','gulp'
+drinking_list=['alcohol','booze','brew','cup','glass','liquor','refreshment','sip','draft','gulp','libation','liquid','potable', 'potation','potion','shot','slug','spirits','after hours','bender','binge','drinking','booze','booze-up ','boozy','bottle','bottoms up','carouse',' down','drinking','drinking-up','hangover','piss-up','ply','snifter','rum','whiskey','vodka','wine','red wine', 'white wine']
+	
+cig_list=['ash','ashtray','baccy','bong','butt ','chain-smoke','cheroot','cig','cigar','cigarette','sxbutt','holder','lighter','paper','ciggie','drag','fag','filter','tip','hookah','lighter','mentholated','nicotine','snuff','snuffbox','tobacco','vaping', 'pipe tobacco', 'pipetobacco','ecigarettes','e-cigarettes','chewing tobacco','chewingtobacco','chain-smoker','chainsmoker','chain smoker']
+	
+
+drug_list=['Bath Salts','Cannabis','Cocaine','Devils Breath', 'Ecstasy','GHB','Hashish','Heroin','Ketamine','Kratom','Krokodil','LSD','Marijuana','MDMA','Mescaline','Opium','PCP ', 'Phencyclidine','Psilocybin','mushrooms','Rohypnol','Speed','methamphetamine','Synthetic Marijuana','TCP','Tenocyclidine','nicotine']
+	
+occupation_list=['fisher', 'fishing', 'pilots', 'police', 'soldier', 'plumber', 'electrician', 'roofers','firefighters','firefighter', 'laborers','freight','stock,'janitors', 'cleaners','drivers', 'trailer drivers','miner', 'mining', 'crude oil engineer', 'petroleum engineer','radiologist', 'lumberjack','scuba','bungee','bungy','diving','dive','scuba diving','bobsleigh','skateboarding','rafting','surfing','paragliding','climbing','motorcross','BMX','snowborading','parachuting','sailing','kayaking','base jumping','mountaineering','adventure sports','sky diving','mountain biking', 'biking','skiing', 'jet skiing',]
+
+

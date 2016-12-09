@@ -2,8 +2,8 @@
 
 
 ## Members:
-- Aditya :
-- Ankit :
-- Dharmendra:
-- Shivam Sachdev : 
-- Stuti Nanda : snanda
+- Aditya
+- Ankit
+- Dharmendra
+- Shivam Sachdev 
+- Stuti Nanda
